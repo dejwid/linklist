@@ -44,7 +44,16 @@ export default async function UserPage({params}) {
   const uri = params.uri;
   mongoose.connect(process.env.MONGO_URI);
   const page = await Page.findOne({uri});
+  if (!page) {
+    // Handle the case where the page is not found
+    return <div>Page not found</div>;
+  }
+
   const user = await User.findOne({email:page.owner});
+  if (!user) {
+    // Handle the case where the user is not found
+    return <div>User not found</div>;
+  }
   await Event.create({uri:uri, page:uri, type:'view'});
   return (
     <div className="bg-blue-950 text-white min-h-screen">
